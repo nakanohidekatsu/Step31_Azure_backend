@@ -14,6 +14,17 @@ class Customers(Base):
     age: Mapped[int] = mapped_column(Integer)
     gender: Mapped[str] = mapped_column(String(10))
 
+# add nakano start
+class Sales(Base):
+    __tablename__ = 'sales'
+    customer_name: Mapped[str] = mapped_column(String(100))
+    customer_id: Mapped[str] = mapped_column(String(10), primary_key=True)
+    ken: Mapped[str] = mapped_column(String(10))
+    city: Mapped[str] = mapped_column(String(20))
+    sicName: Mapped[str] = mapped_column(String(20))
+    simcName: Mapped[str] = mapped_column(String(20))
+    
+# add nakano end
 
 class Items(Base):
     __tablename__ = 'items'

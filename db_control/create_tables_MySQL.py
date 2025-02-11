@@ -17,13 +17,26 @@ def init_db():
         print("Creating tables >>> ")
         try:
             Base.metadata.create_all(bind=engine)
-            print("Tables created successfully!")
+            print("Tables created successfully!(1)")
         except Exception as e:
             print(f"Error creating tables: {e}")
             raise
     else:
         print("Tables already exist.")
 
+# nakano add Start
+    # salesテーブルが存在しない場合は作成
+    if 'sales' not in existing_tables:
+        print("Creating tables >>> ")
+        try:
+            Base.metadata.create_all(bind=engine)
+            print("Tables created successfully!(2)")
+        except Exception as e:
+            print(f"Error creating tables: {e}")
+            raise
+    else:
+        print("Tables already exist.")
+# nakano add End
 
 if __name__ == "__main__":
     init_db()

@@ -103,6 +103,79 @@ def myupdate(mymodel, values):
     session.close()
     return "put"
 
+# nakano add Start
+
+def mysalesselect(mymodel, customer_id):
+    # session構築
+    Session = sessionmaker(bind=engine)
+    session = Session()
+    query = session.query(mymodel).filter(mymodel.customer_id == customer_id)
+    
+    print("nakano mysalesselect", query)
+    
+    try:
+        # トランザクションを開始
+        with session.begin():
+            result = query.all()
+        # 結果をオブジェクトから辞書に変換し、リストに追加
+        result_dict_list = []
+        for sales_info in result:
+            result_dict_list.append({
+                "customer_id": sales_info.customer_id,
+                "customer_name": sales_info.customer_name,
+                "ken": sales_info.ken,
+                "city": sales_info.city,
+                "sicName": sales_info.sicName,
+                "simcName": sales_info.simcName
+            })
+        # リストをJSONに変換
+        result_json = json.dumps(result_dict_list, ensure_ascii=False)
+    except sqlalchemy.exc.IntegrityError:
+        print("一意制約違反により、参照に失敗しました")
+
+    # セッションを閉じる
+    session.close()
+    return result_json
+
+def mysalesinsert(mymodel, values):
+    # session構築
+    Session = sessionmaker(bind=engine)
+    session = Session()
+    
+    query = insert(mymodel).values(values)
+    customer_id = values.pop("customer_id")
+
+    print("nakano salesinsert query",query)
+    try:
+        # トランザクションを開始
+        with session.begin():
+            result = session.execute(query)
+    except sqlalchemy.exc.IntegrityError:
+        print("一意制約違反により、挿入に失敗しました")
+        session.rollback()
+    # セッションを閉じる
+    session.close()
+    return "put"
+
+#def mysalesdelete(mymodel, customer_id):
+#    # session構築
+#    Session = sessionmaker(bind=engine)
+#    session = Session()
+#    query = delete(mymodel).where(mymodel.customer_id == customer_id)
+#    try:
+#        # トランザクションを開始
+#        with session.begin():
+#            result = session.execute(query)
+#    except sqlalchemy.exc.IntegrityError:
+#        print("一意制約違反により、挿入に失敗しました")
+#        session.rollback()
+#
+#    # セッションを閉じる
+#    session.close()
+#    return customer_id + " is deleted"
+
+# nakano add End
+
 
 def mydelete(mymodel, customer_id):
     # session構築
